@@ -1,3 +1,9 @@
+
+
+https://github.com/user-attachments/assets/23176576-6d55-4b36-9f57-85be2e2c1fde
+
+
+
 # AndroidScan — local static & security analyzer for Android projects
 
 A self-hosted (localhost-only) web dashboard that scans Android projects —
