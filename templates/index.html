@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AndroidScan</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z" fill="#0E1420" stroke="#35D0A0" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#35D0A0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="sidebar-brand-text">
+        <div class="name">Android<span>Scan</span></div>
+        <div class="tagline">SAST for Android</div>
+      </div>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9"/></svg>
+        Dashboard
+      </li>
+      <li class="nav-item" data-page="scan-projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a1 1 0 011-1h4l2 2h9a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/></svg>
+        Scan Projects
+      </li>
+      <li class="nav-item" data-page="scan-history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        Scan History
+      </li>
+      <li class="nav-item" data-page="findings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
+        Findings
+      </li>
+      <li class="nav-item" data-page="reports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg>
+        Reports
+      </li>
+      <li class="nav-item" data-page="security-rules">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        Security Rules
+      </li>
+      <li class="nav-item" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.6 7.6 0 000-2l2-1.5-2-3.4-2.3.9a7.7 7.7 0 00-1.7-1L15 3h-6l-.4 2.9a7.7 7.7 0 00-1.7 1l-2.3-.9-2 3.4L4.6 11a7.6 7.6 0 000 2l-2 1.5 2 3.4 2.3-.9a7.7 7.7 0 001.7 1L9 21h6l.4-2.9a7.7 7.7 0 001.7-1l2.3.9 2-3.4-2-1.6z"/></svg>
+        Settings
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="quote-card"><span class="mark">&ldquo;</span><span id="sidebarQuote">Secure Code Builds a Stronger Tomorrow.</span></div>
+      <div class="user-card">
+        <div class="user-avatar" id="userAvatarInitials">—</div>
+        <div class="user-info">
+          <div class="u-name" id="sidebarUserName">—</div>
+          <div class="u-role" id="sidebarUserRole">—</div>
+        </div>
+      </div>
+      <div class="powered-by">Powered by <span class="brand-signature" id="poweredByName">—</span></div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Analyze</span><span class="sep">›</span><span>Secure</span><span class="sep">›</span><span>Build Better Android Apps</span>
+      </div>
+      <div class="topbar-right">
+        <div class="pill-select" id="projectSelect">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 2L4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3z"/></svg>
+          <span id="projectSelectLabel">No scans yet</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          <div class="dropdown-panel hidden" id="projectDropdown"></div>
+        </div>
+        <div class="pill-select" title="Findings reflect the currently selected scan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+          <span id="sessionLabel">This session</span>
+        </div>
+        <button class="btn-new-scan" id="newScanBtn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          New Scan
+        </button>
+        <div class="icon-btn" title="No new notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        </div>
+        <div class="topbar-user">
+          <div class="user-avatar" id="topbarAvatarInitials">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- ============ DASHBOARD PAGE ============ -->
+      <section class="page" data-page="dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Overview of your Android code analysis</p>
+          </div>
+          <div class="header-quote">
+            <div id="headerQuote">&ldquo;Clean Code. Safer Apps. Better Users.&rdquo;</div>
+            <div class="by">— <b id="headerQuoteName">—</b><br><span id="headerQuoteRole">—</span></div>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <h1>No scan yet</h1>
+          <p>Choose a project folder, a .zip, or an .apk to get started.
+             AndroidScan checks Kotlin, Java, JS/TS, Gradle, and manifest files for security
+             vulnerabilities, reliability bugs, and maintainability/reusability issues — then
+             scores the result so you can see, at a glance, whether it's release-ready.</p>
+          <div style="margin-top:18px;"><button class="btn-new-scan" onclick="goToPage('scan-projects')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+            Run your first scan
+          </button></div>
+        </div>
+
+        <div id="progressState" class="progress-state hidden">
+          <div class="progress-phase" id="progressPhase">Preparing…</div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+          <div class="progress-message" id="progressMessage"></div>
+        </div>
+
+        <div id="dashboardResults" class="hidden">
+
+          <div id="warningsBox" class="hidden notice-box notice-warning"></div>
+          <div id="infoNotesBox" class="hidden notice-box notice-info"></div>
+
+          <!-- HERO -->
+          <div class="hero-panel">
+            <div class="gauge-wrap">
+              <svg width="150" height="150" viewBox="0 0 150 150">
+                <circle cx="75" cy="75" r="64" fill="none" stroke="#1B2432" stroke-width="14"/>
+                <circle id="gaugeArc" cx="75" cy="75" r="64" fill="none" stroke="#35D0A0" stroke-width="14" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402"/>
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-score"><span id="scoreValue">0</span></div>
+                <div class="gauge-max">/100</div>
+                <div class="gauge-grade" id="gradeLetter">—</div>
+              </div>
+            </div>
+
+            <div class="hero-mid">
+              <div class="hero-app-row">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="8" width="12" height="11" rx="2"/><path d="M9 8V6a3 3 0 016 0v2M9 2l1 2M15 2l-1 2"/></svg>
+                <span id="heroProjectName">—</span>
+              </div>
+              <div class="hero-stats-row">
+                <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a1 1 0 011-1h5l2 2h7a1 1 0 011 1v10a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"/></svg><span id="heroFilesCount">0 files</span></span>
+                <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M9 12h6M9 16h4"/></svg><span id="heroSlocCount">0 SLOC</span></span>
+                <span class="stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span id="heroDuration">—</span></span>
+                <span class="stat" id="heroLastScanned">—</span>
+              </div>
+            </div>
+
+            <div class="hero-right">
+              <div class="hero-right-top">
+                <div>
+                  <div class="hero-right-label">Security score</div>
+                  <div class="hero-right-score"><span id="scoreValue2">0</span><span>/100</span></div>
+                </div>
+                <div class="gate-pill" id="gatePill">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-bottom" style="padding: 0 26px 22px; margin-top:-14px;">
+            <div class="score-bar-track">
+              <div class="score-bar-fill" id="scoreBarFill"></div>
+              <div class="score-bar-marker" id="scoreBarMarker"></div>
+            </div>
+            <div class="score-bar-labels"><span id="gateMarkerLabel">80 — typical release bar</span></div>
+            <div class="gate-banner" id="gateBanner">
+              <div class="gate-banner-text">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L2.6 17a1.8 1.8 0 001.5 2.7h15.8a1.8 1.8 0 001.5-2.7L13.7 3.9a1.8 1.8 0 00-3.4 0z"/></svg>
+                <div>
+                  <div class="headline" id="gateHeadline">—</div>
+                  <div class="sub" id="gateSub">—</div>
+                </div>
+              </div>
+              <button class="btn-ghost" onclick="goToPage('findings')">View Details →</button>
+            </div>
+          </div>
+
+          <!-- STAT TILES -->
+          <div class="tiles-row" id="categoryTiles"></div>
+
+          <!-- SPECIAL FOCUS TAGS: memory leaks / performance / runtime errors -->
+          <div id="tagTilesSection" class="hidden">
+            <div class="section-title">Special focus areas</div>
+            <div class="tiles-row" id="tagTiles"></div>
+          </div>
+
+          <!-- CHARTS ROW -->
+          <div class="charts-row">
+            <div class="chart-panel">
+              <div class="chart-panel-title">Findings by Severity <span class="see-all" onclick="goToPage('findings')">→</span></div>
+              <div class="donut-row">
+                <div class="donut-wrap">
+                  <div class="donut" id="sevDonut" style="width:100%;height:100%;border-radius:50%;"></div>
+                  <div class="donut-center"><div class="num" id="donutTotal">0</div><div class="lbl">Findings</div></div>
+                </div>
+                <div class="donut-legend" id="sevLegend"></div>
+              </div>
+            </div>
+            <div class="chart-panel">
+              <div class="chart-panel-title">Top Issue Categories</div>
+              <div class="catbar-list" id="catBarList"></div>
+            </div>
+            <div class="chart-panel">
+              <div class="chart-panel-title">Security Score Trend <span class="trend-legend"><span class="dot"></span>Security Score</span></div>
+              <div class="trend-svg-wrap"><svg id="trendSvg" viewBox="0 0 400 170" preserveAspectRatio="none"></svg></div>
+            </div>
+          </div>
+
+          <!-- BOTTOM TWO COL -->
+          <div class="bottom-row">
+            <div class="bottom-panel">
+              <div class="bottom-panel-head"><h3>Files with Most Findings</h3><span class="see-all" onclick="goToPage('findings')">View all files →</span></div>
+              <table class="files-table">
+                <thead><tr><th>File</th><th>Findings</th><th>Severity</th></tr></thead>
+                <tbody id="topFilesBody"></tbody>
+              </table>
+            </div>
+            <div class="bottom-panel">
+              <div class="bottom-panel-head"><h3>Latest Findings</h3><span class="see-all" onclick="goToPage('findings')">View all findings →</span></div>
+              <div class="lf-list" id="latestFindingsList"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ SCAN PROJECTS PAGE ============ -->
+      <section class="page hidden" data-page="scan-projects">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Scan Projects</h1>
+            <p class="page-subtitle">Upload a project folder, .zip, or .apk to run a new scan</p>
+          </div>
+        </div>
+
+        <div class="upload-card">
+          <div class="field">
+            <label for="project_name">Project name</label>
+            <input type="text" id="project_name" placeholder="my-android-app">
+          </div>
+          <div class="field">
+            <label>Source</label>
+            <div id="dropzone" class="dropzone">
+              <strong>Drop a folder, .zip, or .apk here</strong>
+              or use the buttons below
+            </div>
+            <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden">
+            <input type="file" id="zipInput" accept=".zip,.apk" class="hidden">
+            <div class="upload-row">
+              <button class="secondary" id="pickFolderBtn" type="button">Choose folder</button>
+              <button class="secondary" id="pickZipBtn" type="button">Choose .zip / .apk</button>
+            </div>
+            <div id="fileListWrap" class="hidden">
+              <div id="fileList" class="file-list"></div>
+            </div>
+          </div>
+          <button class="btn-primary-full" id="scanBtn" disabled>Run scan</button>
+          <div class="upload-note">
+            Everything runs on your machine. Uploaded files (and any .apk, which is decompiled
+            locally with jadx) are analyzed for this scan and then deleted from disk — nothing
+            is sent anywhere else. Binary files, build artifacts, and anything over 2 MB are
+            skipped automatically, so a whole project folder is fine to drop in as-is.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SCAN HISTORY PAGE ============ -->
+      <section class="page hidden" data-page="scan-history">
+        <div class="page-header">
+          <div><h1 class="page-title">Scan History</h1><p class="page-subtitle">Every scan run in this session</p></div>
+        </div>
+        <div class="bottom-panel">
+          <table class="history-table">
+            <thead><tr><th>Project</th><th>Time</th><th>Score</th><th>Grade</th><th>Files</th><th>Duration</th></tr></thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+          <div id="historyEmpty" class="loading" style="padding:30px 0;">No scans yet this session.</div>
+        </div>
+      </section>
+
+      <!-- ============ FINDINGS PAGE ============ -->
+      <section class="page hidden" data-page="findings">
+        <div class="page-header">
+          <div><h1 class="page-title">Findings</h1><p class="page-subtitle" id="findingsSubtitle">All findings for the selected scan</p></div>
+        </div>
+        <div class="tiles-row" id="categoryTilesFindings"></div>
+        <div class="filters" id="filters"></div>
+        <div class="filters" id="tagFilters"></div>
+        <div class="findings" id="findings"></div>
+        <div id="loadMoreWrap" class="hidden" style="text-align:center;margin-top:14px;">
+          <button class="secondary" id="loadMoreBtn">Show more findings</button>
+        </div>
+        <div id="findingsEmpty" class="loading hidden" style="padding: 12vh 0;">Run a scan to see findings here.</div>
+      </section>
+
+      <!-- ============ REPORTS PAGE ============ -->
+      <section class="page hidden" data-page="reports">
+        <div class="page-header">
+          <div><h1 class="page-title">Reports</h1><p class="page-subtitle">Export a scan as a standalone report</p></div>
+        </div>
+        <div class="bottom-panel" style="max-width:800px;">
+          <table class="history-table">
+            <thead><tr><th>Project</th><th>Time</th><th>Score</th><th>Grade</th><th></th></tr></thead>
+            <tbody id="reportsTableBody"></tbody>
+          </table>
+          <div id="reportsEmpty" class="loading" style="padding:30px 0;">No scans yet this session.</div>
+        </div>
+      </section>
+
+      <!-- ============ SECURITY RULES PAGE ============ -->
+      <section class="page hidden" data-page="security-rules">
+        <div class="page-header">
+          <div><h1 class="page-title">Security Rules</h1><p class="page-subtitle" id="rulesSubtitle">Every rule AndroidScan checks for</p></div>
+        </div>
+        <input type="text" class="rule-search" id="ruleSearch" placeholder="Search rules...">
+        <div class="filters" id="ruleCategoryFilters"></div>
+        <div id="rulesList"></div>
+      </section>
+
+      <!-- ============ SETTINGS PAGE ============ -->
+      <section class="page hidden" data-page="settings">
+        <div class="page-header">
+          <div><h1 class="page-title">Settings</h1><p class="page-subtitle">Local scan configuration</p></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-row"><span class="k">Max upload size</span><span class="v">2 GB</span></div>
+          <div class="settings-row"><span class="k">Max individual file size scanned</span><span class="v">2 MB</span></div>
+          <div class="settings-row"><span class="k">Auto-excluded extensions</span><span class="v">.apk*, .aab, .bundle, .jar, images, media, fonts…</span></div>
+          <div class="settings-row"><span class="k">Excluded directories</span><span class="v">build, node_modules, .git, dist, Pods…</span></div>
+          <div class="settings-row"><span class="k">Rule count</span><span class="v" id="settingsRuleCount">—</span></div>
+          <div class="settings-row"><span class="k">Release-readiness score bar</span><span class="v">80/100</span></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-row"><span class="k">Server</span><span class="v">127.0.0.1:5050 (local only)</span></div>
+          <div class="settings-row"><span class="k">Data retention</span><span class="v">In-memory for this session only</span></div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="page-footer">
+      <span>AndroidScan v1.0.0 &nbsp;|&nbsp; Static Analysis for Safer Android Apps</span>
+      <span>Powered by <span class="brand-signature" id="footerSignature">—</span>
+        <span class="company-mark"><svg viewBox="0 0 24 24"><path d="M12 3L21 20H3z"/></svg></span><b id="footerCompany">—</b>
+      </span>
+    </div>
+
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

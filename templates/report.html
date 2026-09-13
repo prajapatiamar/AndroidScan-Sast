@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ r.project_name }} — AndroidScan report</title>
+<style>
+  :root{
+    --bg:#11151C; --surface:#171D27; --surface-raised:#1E2530; --border:#2A3240;
+    --text:#EAEDF2; --text-muted:#8D96A6; --accent:#4FD1A5;
+    --critical:#F2545B; --high:#F2994A; --medium:#F2C94C; --low:#56A8E8; --info:#8D96A6;
+    --mono: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+    --sans: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{ background:var(--bg); color:var(--text); font-family:var(--sans); font-size:14px; line-height:1.55; margin:0; padding: 40px 48px; }
+  h1{ font-size:20px; margin:0 0 4px; }
+  .meta{ color:var(--text-muted); font-size:12.5px; margin-bottom:28px; }
+  .summary-row{ display:flex; gap:20px; margin-bottom: 26px; }
+  .panel{ background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:16px 20px; }
+  .grade{ font-family:var(--mono); font-size:34px; font-weight:700; }
+  .sev-bar{ height:10px; border-radius:3px; overflow:hidden; display:flex; background:var(--surface-raised); margin: 8px 0 10px; }
+  .sev-bar span{ height:100%; }
+  .legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--text-muted);}
+  .dot{ width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px; }
+  table{ width:100%; border-collapse:collapse; margin-bottom: 24px; }
+  th,td{ text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); font-size:12.5px; }
+  th{ color:var(--text-muted); font-weight:500; }
+  .section-title{ font-size:13px; color:var(--text-muted); margin: 26px 0 10px; }
+  .finding{ background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--info); border-radius:4px; padding:14px 16px; margin-bottom:10px;}
+  .finding.critical{border-left-color:var(--critical);}
+  .finding.high{border-left-color:var(--high);}
+  .finding.medium{border-left-color:var(--medium);}
+  .finding.low{border-left-color:var(--low);}
+  .finding.info{border-left-color:var(--info);}
+  .f-head{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .sev-tag{ font-family:var(--mono); font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:3px; }
+  .sev-tag.critical{background:var(--critical);color:#2b0507;}
+  .sev-tag.high{background:var(--high);color:#2b1400;}
+  .sev-tag.medium{background:var(--medium);color:#2b2200;}
+  .sev-tag.low{background:var(--low);color:#001a2b;}
+  .sev-tag.info{background:var(--info);color:#12151c;}
+  .f-title{ font-weight:600; flex:1; }
+  .f-loc{ font-family:var(--mono); font-size:12px; color:var(--text-muted); }
+  .cwe{ font-family:var(--mono); font-size:11px; color:var(--text-muted); border:1px solid var(--border); padding:1px 6px; border-radius:3px;}
+  .category-tag{ font-family:var(--mono); font-size:10px; font-weight:700; text-transform:uppercase; padding:2px 6px; border-radius:3px; border:1px solid var(--border); color:var(--text-muted); }
+  .tag-badge{ font-family:var(--mono); font-size:10px; font-weight:700; text-transform:uppercase; padding:2px 7px; border-radius:3px; letter-spacing:.3px; white-space:nowrap; }
+  .tag-memory-leak{ background: rgba(232, 93, 117, 0.14); color: #F26D8D; border: 1px solid rgba(242, 109, 141, 0.4); }
+  .tag-performance{ background: rgba(91, 156, 246, 0.14); color: #5B9CF6; border: 1px solid rgba(91, 156, 246, 0.4); }
+  .tag-runtime-error{ background: rgba(242, 153, 74, 0.14); color: var(--high); border: 1px solid rgba(242, 153, 74, 0.4); }
+  .tiles-row{ display:flex; gap:14px; margin-bottom:22px; }
+  .tile-static{ flex:1; text-align:center; }
+  .mnum{ font-family:var(--mono); font-size:20px; font-weight:700; color:var(--text); margin-bottom:4px; }
+  .mlabel{ font-size:11.5px; color:var(--text-muted); }
+  p{ margin: 0 0 8px; color:var(--text-muted); font-size:13px; }
+  .label{ color:var(--text); font-weight:600; }
+  pre{ background:var(--surface-raised); border:1px solid var(--border); border-radius:4px; padding:9px 11px; font-family:var(--mono); font-size:12px; overflow-x:auto; margin:0 0 8px; }
+  @media print { body{ padding: 20px; } .finding{ break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+  <div style="font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:6px;letter-spacing:.3px;">AndroidScan</div>
+  <h1>{{ r.project_name }} — static &amp; security analysis</h1>
+  <div class="meta">Generated {{ r.generated_at }} · {{ r.files_scanned }} files scanned · {{ r.totals.sloc }} SLOC
+    {% if r.skipped_binary_files or r.skipped_large_files %}
+    · {{ r.skipped_binary_files }} binary/build-artifact file(s) and {{ r.skipped_large_files }} large file(s) auto-excluded
+    {% endif %}
+  </div>
+
+  <div class="panel" style="margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+      <div><span style="font-family:var(--mono);font-size:28px;font-weight:700;">{{ r.security_score }}</span><span style="color:var(--text-muted);font-size:14px;">/{{ r.security_score_max }}</span></div>
+      <div style="color:var(--text-muted);font-size:12px;">Security score</div>
+    </div>
+    <div style="position:relative;height:10px;border-radius:5px;background:var(--surface-raised);border:1px solid var(--border);">
+      <div style="height:100%;border-radius:5px 0 0 5px;width:{{ r.security_score }}%;background:{{ 'var(--accent)' if r.quality_gate_passed else ('var(--medium)' if r.security_score >= 50 else 'var(--critical)') }};"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--text);opacity:.6;left:{{ r.quality_gate_min_score }}%;"></div>
+    </div>
+    <div style="margin-top:10px;font-size:12.5px;padding:8px 12px;border-radius:4px;border:1px solid {{ 'var(--accent)' if r.quality_gate_passed else 'var(--high)' }};color:{{ 'var(--accent)' if r.quality_gate_passed else 'var(--high)' }};">
+      {{ '✓ Passes' if r.quality_gate_passed else '✗ Fails' }} the typical release-readiness bar (no critical/high findings, score ≥ {{ r.quality_gate_min_score }}/100). {{ r.quality_gate_reason }}
+    </div>
+  </div>
+
+  <div class="summary-row">
+    <div class="panel" style="flex:1;">
+      <div style="color:var(--text-muted);font-size:12px;">Findings by severity</div>
+      <div class="sev-bar">
+        {% set total = (r.severity_counts.values() | sum) or 1 %}
+        {% for s in ['critical','high','medium','low','info'] %}
+          {% if r.severity_counts[s] > 0 %}
+          <span style="width:{{ (r.severity_counts[s] / total * 100) }}%;background:var(--{{ s }});"></span>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="legend">
+        {% for s in ['critical','high','medium','low','info'] %}
+        <span><span class="dot" style="background:var(--{{ s }});"></span>{{ s|capitalize }} ({{ r.severity_counts[s] }})</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="tiles-row">
+    {% for c in ['vulnerability','bug','code_smell'] %}
+    <div class="panel tile-static">
+      <div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--{{ 'critical' if c=='vulnerability' else ('low' if c=='bug' else 'medium') }});">{{ (r.category_counts or {}).get(c, 0) }}</div>
+      <div style="font-size:12px;color:var(--text-muted);">{{ c|replace('_',' ')|capitalize }}{{ 's' if c != 'code_smell' else '' }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="section-title">Reusability &amp; maintainability</div>
+  <div class="tiles-row">
+    <div class="panel tile-static"><div class="mnum">{{ r.duplication_percentage }}%</div><div class="mlabel">Duplicated code</div></div>
+    <div class="panel tile-static"><div class="mnum">{{ (r.maintainability_counts or {}).get('duplicate-code-block', 0) }}</div><div class="mlabel">Duplicated blocks</div></div>
+    <div class="panel tile-static"><div class="mnum">{{ (r.maintainability_counts or {}).get('large-class', 0) }}</div><div class="mlabel">Large classes</div></div>
+    <div class="panel tile-static"><div class="mnum">{{ (r.maintainability_counts or {}).get('long-parameter-list', 0) }}</div><div class="mlabel">Long parameter lists</div></div>
+    <div class="panel tile-static"><div class="mnum">{{ (r.maintainability_counts or {}).get('duplicate-string-literal', 0) }}</div><div class="mlabel">Repeated strings</div></div>
+  </div>
+
+  {% if (r.tag_counts or {}).values() | sum > 0 %}
+  <div class="section-title">Special focus areas</div>
+  <div class="tiles-row">
+    <div class="panel tile-static" style="border-color: rgba(242,109,141,0.4);">
+      <div class="mnum" style="color:#F26D8D;">{{ (r.tag_counts or {}).get('memory-leak', 0) }}</div>
+      <div class="mlabel">🛠 Memory leak risks</div>
+    </div>
+    <div class="panel tile-static" style="border-color: rgba(91,156,246,0.4);">
+      <div class="mnum" style="color:#5B9CF6;">{{ (r.tag_counts or {}).get('performance', 0) }}</div>
+      <div class="mlabel">Performance</div>
+    </div>
+    <div class="panel tile-static" style="border-color: rgba(242,153,74,0.4);">
+      <div class="mnum" style="color:var(--high);">{{ (r.tag_counts or {}).get('runtime-error', 0) }}</div>
+      <div class="mlabel">Runtime error risks</div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if r.top_files %}
+  <div class="section-title">Files with the most findings</div>
+  <table>
+    <tr><th>File</th><th>Findings</th></tr>
+    {% for f in r.top_files %}
+    <tr><td>{{ f.file }}</td><td>{{ f.count }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <div class="section-title">All findings ({{ r.findings|length }})</div>
+  {% for f in r.findings %}
+  <div class="finding {{ f.severity }}">
+    <div class="f-head">
+      <span class="sev-tag {{ f.severity }}">{{ f.severity|upper }}</span>
+      <span class="category-tag">{{ f.category|replace('_',' ')|capitalize }}</span>
+      {% for t in (f.tags or []) %}
+        {% if t == 'memory-leak' %}<span class="tag-badge tag-memory-leak">🛠 MEMORY LEAK</span>{% endif %}
+        {% if t == 'performance' %}<span class="tag-badge tag-performance">PERFORMANCE</span>{% endif %}
+        {% if t == 'runtime-error' %}<span class="tag-badge tag-runtime-error">RUNTIME ERROR</span>{% endif %}
+      {% endfor %}
+      <span class="f-title">{{ f.title }}</span>
+      {% if f.cwe %}<span class="cwe">{{ f.cwe }}</span>{% endif %}
+      <span class="f-loc">{{ f.file }}:{{ f.line }}</span>
+    </div>
+    <p><span class="label">What this means:</span> {{ f.description }}</p>
+    {% if f.snippet %}<pre>{{ f.snippet }}</pre>{% endif %}
+    <p><span class="label">Recommendation:</span> {{ f.recommendation }}</p>
+  </div>
+  {% else %}
+  <p>No findings — nice and clean.</p>
+  {% endfor %}
+
+</body>
+</html>
