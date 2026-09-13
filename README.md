@@ -12,6 +12,12 @@ nothing is persisted after the server stops. Binary files, build artifacts,
 and anything over 2 MB are auto-excluded, so you can hand it a whole project
 folder as-is.
 
+<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 41 43 PM" src="https://github.com/user-attachments/assets/0b07938f-9fb0-4fdb-ae6f-3c9358857d62" />
+
+<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 42 05 PM" src="https://github.com/user-attachments/assets/b02601cd-710c-4eb1-b844-8b2347b688f9" />
+
+<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 41 56 PM" src="https://github.com/user-attachments/assets/49afb9eb-802d-4130-bfa4-6451c610e33d" />
+
 ## Run it
 
 Requires Python 3.9+.
@@ -268,13 +274,6 @@ androidscan/
 ├── tools/                  jadx gets downloaded/cached here on first APK scan
 └── requirements.txt
 ```
-
-<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 41 43 PM" src="https://github.com/user-attachments/assets/0b07938f-9fb0-4fdb-ae6f-3c9358857d62" />
-
-<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 42 05 PM" src="https://github.com/user-attachments/assets/b02601cd-710c-4eb1-b844-8b2347b688f9" />
-
-<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 41 56 PM" src="https://github.com/user-attachments/assets/49afb9eb-802d-4130-bfa4-6451c610e33d" />
-
 
 https://github.com/user-attachments/assets/425a5956-d3a2-47f3-90bb-f6f23752e987
 
