@@ -269,6 +269,7 @@ androidscan/
 └── requirements.txt
 ```
 
+<img width="1512" height="789" alt="Screenshot 2026-09-13 at 11 41 43 PM" src="https://github.com/user-attachments/assets/0b07938f-9fb0-4fdb-ae6f-3c9358857d62" />
 
 
 https://github.com/user-attachments/assets/425a5956-d3a2-47f3-90bb-f6f23752e987
