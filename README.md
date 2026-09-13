@@ -268,3 +268,9 @@ androidscan/
 ├── tools/                  jadx gets downloaded/cached here on first APK scan
 └── requirements.txt
 ```
+
+
+
+https://github.com/user-attachments/assets/425a5956-d3a2-47f3-90bb-f6f23752e987
+
+
